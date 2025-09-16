@@ -1,0 +1,27 @@
+# Rasa-Chatbot/infra/k8s/deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rasa
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rasa
+  template:
+    metadata:
+      labels:
+        app: rasa
+    spec:
+      containers:
+        - name: rasa
+          image: yourrepo/rasa:latest
+          ports:
+            - containerPort: 5005
+          env:
+            - name: RASA_X_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rasa-secrets
+                  key: RASA_X_PASSWORD

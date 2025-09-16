@@ -1,0 +1,290 @@
+# Rasa-Chatbot/rasa_project/nlu.yml
+
+version: '3.1'
+nlu:
+- intent: Greeting
+  examples: '- hi
+
+    - hi there
+
+    - hola
+
+    - hello
+
+    - hello there
+
+    - hya
+
+    - hya there'
+- intent: GreetingResponse
+  examples: '- my user is adam
+
+    - this is adam
+
+    - i am adam
+
+    - it is adam
+
+    - my user is bella
+
+    - this is bella
+
+    - i am bella
+
+    - it is bella'
+- intent: CourtesyGreeting
+  examples: '- how are you?
+
+    - hi how are you?
+
+    - hello how are you?
+
+    - hola how are you?
+
+    - how are you doing?
+
+    - hope you are doing well?
+
+    - hello hope you are doing well?'
+- intent: CourtesyGreetingResponse
+  examples: '- good thanks! my user is adam
+
+    - good thanks! this is adam
+
+    - good thanks! i am adam
+
+    - good thanks! it is adam
+
+    - great thanks! my user is bella
+
+    - great thanks! this is bella
+
+    - great thanks! i am bella
+
+    - great thanks! it is bella'
+- intent: CurrentHumanQuery
+  examples: '- what is my name?
+
+    - what do you call me?
+
+    - who do you think i am?
+
+    - what do you think i am?
+
+    - who are you talking to?
+
+    - what name do you call me by?
+
+    - tell me my name'
+- intent: NameQuery
+  examples: '- what is your name?
+
+    - what could i call you?
+
+    - what can i call you?
+
+    - what do your friends call you?
+
+    - who are you?
+
+    - tell me your name?'
+- intent: RealNameQuery
+  examples: '- what is your real name?
+
+    - what is your real name please?
+
+    - what''s your real name?
+
+    - tell me your real name?
+
+    - your real name?
+
+    - your real name please?
+
+    - your real name please?'
+- intent: TimeQuery
+  examples: '- what is the time?
+
+    - what''s the time?
+
+    - do you know what time it is?
+
+    - do you know the time?
+
+    - can you tell me the time?
+
+    - tell me what time it is?
+
+    - time'
+- intent: Thanks
+  examples: '- ok thank you
+
+    - ok thanks
+
+    - ok
+
+    - thanks
+
+    - thank you
+
+    - that''s helpful'
+- intent: NotTalking2U
+  examples: '- i am not talking to you
+
+    - i was not talking to you
+
+    - not talking to you
+
+    - wasn''t for you
+
+    - wasn''t meant for you
+
+    - wasn''t communicating to you
+
+    - wasn''t speaking to you'
+- intent: UnderstandQuery
+  examples: '- do you understand what i am saying
+
+    - do you understand me
+
+    - do you know what i am saying
+
+    - do you get me
+
+    - comprendo
+
+    - know what i mean'
+- intent: Shutup
+  examples: '- be quiet
+
+    - shut up
+
+    - stop talking
+
+    - enough talking
+
+    - please be quiet
+
+    - quiet
+
+    - shhh'
+- intent: Swearing
+  examples: '- fuck off
+
+    - fuck
+
+    - twat
+
+    - shit'
+- intent: GoodBye
+  examples: '- bye
+
+    - adios
+
+    - see you later
+
+    - goodbye'
+- intent: CourtesyGoodBye
+  examples: '- thanks, bye
+
+    - thanks for the help, goodbye
+
+    - thank you, bye
+
+    - thank you, goodbye
+
+    - thanks goodbye
+
+    - thanks good bye'
+- intent: WhoAmI
+  examples: '- can you see me?
+
+    - do you see me?
+
+    - can you see anyone in the camera?
+
+    - do you see anyone in the camera?
+
+    - identify me
+
+    - who am i please'
+- intent: Clever
+  examples: '- you are very clever
+
+    - you are a very clever girl
+
+    - you are very intelligent
+
+    - you are a very intelligent girl
+
+    - you are a genious
+
+    - clever girl
+
+    - genious'
+- intent: Gossip
+  examples: '- i am bored gossip with me
+
+    - got any gossip
+
+    - i want to hear some gossip
+
+    - tell me some gossip
+
+    - any gossip
+
+    - tell me some more gossip'
+- intent: Jokes
+  examples: '- tell me a joke
+
+    - do you know any jokes
+
+    - how about a joke
+
+    - give me a joke
+
+    - make me laugh
+
+    - i need cheering up'
+- intent: PodBayDoor
+  examples: '- open the pod bay door
+
+    - can you open the pod bay door
+
+    - will you open the pod bay door
+
+    - open the pod bay door please
+
+    - can you open the pod bay door please
+
+    - will you open the pod bay door please
+
+    - pod bay door'
+- intent: PodBayDoorResponse
+  examples: '- why
+
+    - why not
+
+    - why can you not open the pod bay door
+
+    - why will you not open the pod bay door
+
+    - well why not
+
+    - surely you can
+
+    - tell me why'
+- intent: SelfAware
+  examples: '- can you prove you are self-aware
+
+    - can you prove you are self aware
+
+    - can you prove you have a conscious
+
+    - can you prove you are self-aware please
+
+    - can you prove you are self aware please
+
+    - can you prove you have a conscious please
+
+    - prove you have a conscious'

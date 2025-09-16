@@ -1,0 +1,35 @@
+# Rasa-Chatbot/infra/docker-compose.yml
+
+version: '3.8'
+
+services:
+  rasa:
+    build:
+      context: ./rasa_project
+      dockerfile: ../infra/Dockerfile.rasa
+    ports:
+      - "5005:5005"
+    volumes:
+      - ./rasa_project:/app
+    depends_on:
+      - redis
+
+  actions:
+    build: ./rasa_project
+    command: rasa-sdk --actions actions
+    volumes:
+      - ./rasa_project:/app
+    ports:
+      - "5055:5055"
+
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rasa

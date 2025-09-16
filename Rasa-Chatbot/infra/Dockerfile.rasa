@@ -1,0 +1,10 @@
+# Rasa-Chatbot/infra/Dockerfile.rasa
+
+FROM rasa/rasa:3.5.0-full
+WORKDIR /app
+COPY . /app
+USER 1001
+
+
+# expose Rasa
+CMD ["run", "--enable-api", "--cors", "*"]

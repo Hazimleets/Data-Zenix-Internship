@@ -1,0 +1,92 @@
+# Rasa-Chatbot/rasa_project/stories.yml
+
+version: '3.1'
+stories:
+- story: Greeting path
+  steps:
+  - intent: Greeting
+  - action: utter_Greeting
+- story: GreetingResponse path
+  steps:
+  - intent: GreetingResponse
+  - action: utter_GreetingResponse
+- story: CourtesyGreeting path
+  steps:
+  - intent: CourtesyGreeting
+  - action: utter_CourtesyGreeting
+- story: CourtesyGreetingResponse path
+  steps:
+  - intent: CourtesyGreetingResponse
+  - action: utter_CourtesyGreetingResponse
+- story: CurrentHumanQuery path
+  steps:
+  - intent: CurrentHumanQuery
+  - action: utter_CurrentHumanQuery
+- story: NameQuery path
+  steps:
+  - intent: NameQuery
+  - action: utter_NameQuery
+- story: RealNameQuery path
+  steps:
+  - intent: RealNameQuery
+  - action: utter_RealNameQuery
+- story: TimeQuery path
+  steps:
+  - intent: TimeQuery
+  - action: utter_TimeQuery
+- story: Thanks path
+  steps:
+  - intent: Thanks
+  - action: utter_Thanks
+- story: NotTalking2U path
+  steps:
+  - intent: NotTalking2U
+  - action: utter_NotTalking2U
+- story: UnderstandQuery path
+  steps:
+  - intent: UnderstandQuery
+  - action: utter_UnderstandQuery
+- story: Shutup path
+  steps:
+  - intent: Shutup
+  - action: utter_Shutup
+- story: Swearing path
+  steps:
+  - intent: Swearing
+  - action: utter_Swearing
+- story: GoodBye path
+  steps:
+  - intent: GoodBye
+  - action: utter_GoodBye
+- story: CourtesyGoodBye path
+  steps:
+  - intent: CourtesyGoodBye
+  - action: utter_CourtesyGoodBye
+- story: WhoAmI path
+  steps:
+  - intent: WhoAmI
+  - action: utter_WhoAmI
+- story: Clever path
+  steps:
+  - intent: Clever
+  - action: utter_Clever
+- story: Gossip path
+  steps:
+  - intent: Gossip
+  - action: utter_Gossip
+- story: Jokes path
+  steps:
+  - intent: Jokes
+  - action: utter_Jokes
+- story: PodBayDoor path
+  steps:
+  - intent: PodBayDoor
+  - action: utter_PodBayDoor
+- story: PodBayDoorResponse path
+  steps:
+  - intent: PodBayDoorResponse
+  - action: utter_PodBayDoorResponse
+- story: SelfAware path
+  steps:
+  - intent: SelfAware
+  - action: utter_SelfAware

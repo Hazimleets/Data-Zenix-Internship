@@ -1,0 +1,7 @@
+[theme]
+base = "dark"
+primaryColor = "#4F46E5"        # violet accent
+backgroundColor = "#0E1117"     # deep gray background
+secondaryBackgroundColor = "#1E293B" # slate
+textColor = "#F8FAFC"           # near white
+font = "sans serif"

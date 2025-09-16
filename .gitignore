@@ -1,0 +1,82 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Compiled extensions
+*.so
+*.dll
+*.dylib
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# VSCode / PyCharm / IDE stuff
+.vscode/
+.idea/
+*.iml
+
+# FastAPI / Streamlit specific
+*.db
+*.sqlite3
+*.sqlite
+
+# Configs / secrets
+*.env.local
+*.env.*
+secrets/
+config.yaml
+
+# Joblib / model files (keep if needed, else ignore large ones)
+*.pkl
+*.joblib
+
+# Cache
+*.cache
+.cache/
+.pytest_cache/
+__pypackages__/
+
+# Data (optional – keep if you want to share datasets)
+data/
+*.csv
+*.tsv
+*.xlsx
+
+# Node / frontend (if used later)
+node_modules/
+npm-debug.log
+yarn-error.log

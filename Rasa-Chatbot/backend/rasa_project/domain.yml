@@ -1,0 +1,47 @@
+# Rasa-Chatbot/rasa_project/domains.yml
+
+version: "3.1"
+
+intents:
+  - Greeting
+  - GreetingResponse
+  - CourtesyGreeting
+  - CourtesyGreetingResponse
+  - CurrentHumanQuery
+  - NameQuery
+  - RealNameQuery
+  - TimeQuery
+  - Thanks
+  - NotTalking2U
+  - UnderstandQuery
+  - Shutup
+  - Swearing
+  - GoodBye
+  - CourtesyGoodBye
+  - WhoAmI
+  - Clever
+  - Gossip
+  - Jokes
+  - PodBayDoor
+  - PodBayDoorResponse
+  - SelfAware
+
+responses:
+  utter_Greeting:
+    - text: Hi human, please tell me your GeniSys user
+    - text: Hello human, please tell me your GeniSys user
+    - text: Hola human, please tell me your GeniSys user
+
+  utter_GreetingResponse:
+    - text: Great! Hi <HUMAN>! How can I help?
+    - text: Good! Hi <HUMAN>, how can I help you?
+    - text: Cool! Hello <HUMAN>, what can I do for you?
+    - text: OK! Hola <HUMAN>, how can I help you?
+    - text: OK! hi <HUMAN>, what can I do for you?
+
+  utter_CourtesyGreeting:
+    - text: Hello, I am great, how are you? Please tell me your GeniSys user
+    - text: Hi, how are you? I am great thanks! Please tell me your GeniSys user
+    - text: Hi, good thank you, how are you? Please tell me your GeniSys user
+
+  # (… and so on for all other responses: TimeQuery, Thanks, Jokes, Gossip, etc.)

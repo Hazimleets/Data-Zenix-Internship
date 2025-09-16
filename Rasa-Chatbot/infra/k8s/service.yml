@@ -1,0 +1,27 @@
+# Rasa-Chatbot/infra/k8s/service.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rasa-service
+spec:
+  selector:
+    app: rasa
+  ports:
+    - protocol: TCP
+      port: 5005       # service port
+      targetPort: 5005 # container port (Rasa inside pod)
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+spec:
+  selector:
+    app: api-gateway
+  ports:
+    - protocol: TCP
+      port: 8000       # service port
+      targetPort: 8000 # FastAPI port
+  type: ClusterIP
