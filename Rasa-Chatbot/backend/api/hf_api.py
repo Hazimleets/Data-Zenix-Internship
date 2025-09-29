@@ -1,33 +1,31 @@
 import os
 from dotenv import load_dotenv
-from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 
-# Load env vars
 load_dotenv()
 
-MODEL_NAME = os.getenv("MODEL_NAME")
-HF_TOKEN = os.getenv("HF_TOKEN")
+MODEL_NAME = os.getenv("MODEL_NAME", "facebook/blenderbot-400M-distill")
 
-print(f"🔧 Loading Hugging Face model: {MODEL_NAME}")
+# Load model and tokenizer locally
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
 
+# Create a pipeline for text generation
 pipe = pipeline(
-    "text-generation",
-    model=MODEL_NAME,
-    use_auth_token=HF_TOKEN,
-    device_map="auto"  # use GPU if available
+    "text2text-generation",
+    model=model,
+    tokenizer=tokenizer,
+    device=0 if model.device.type == "cuda" else -1  # GPU if available
 )
 
+def format_prompt(question: str) -> str:
+    """Make the bot answer professionally."""
+    return f"You are a professional AI assistant. Answer clearly, politely, and concisely.\n\nUser: {question}\nAssistant:"
+
 def get_answer(question: str) -> str:
-    """
-    Returns the answer from the Hugging Face model.
-    """
+    prompt = format_prompt(question)
     try:
-        outputs = pipe(
-            question,
-            max_new_tokens=256,
-            temperature=0.7,
-            top_p=0.9
-        )
-        return outputs[0]["generated_text"]
+        outputs = pipe(prompt, max_new_tokens=256, do_sample=True, temperature=0.7)
+        return outputs[0]["generated_text"].strip()
     except Exception as e:
         return f"❌ Inference failed: {str(e)}"

@@ -9,29 +9,26 @@ function App() {
   const chatEndRef = useRef(null)
 
   async function sendMessage() {
-  if (!input.trim()) return
+    if (!input.trim()) return
 
-  const userMessage = { from: 'user', text: input }
-  setMessages(prev => [...prev, userMessage])
-  setInput('')
+    const userMessage = { from: 'user', text: input }
+    setMessages(prev => [...prev, userMessage])
+    const messageText = input
+    setInput('')
 
-  try {
-    const res = await fetch('http://localhost:8000/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sender: 'user1', message: input })
-    })
-
-    const data = await res.json()
-    // ✅ Adjusted for backend response
-    const botMessages = [{ from: 'bot', text: data.reply || '...' }]
-    setMessages(prev => [...prev, ...botMessages])
-
-  } catch (error) {
-    setMessages(prev => [...prev, { from: 'bot', text: 'Error: Could not connect to server' }])
+    try {
+      const res = await fetch('http://localhost:8000/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sender: 'user1', message: messageText })
+      })
+      const data = await res.json()
+      const botMessage = { from: 'bot', text: data.reply || '...' }
+      setMessages(prev => [...prev, botMessage])
+    } catch (error) {
+      setMessages(prev => [...prev, { from: 'bot', text: 'Error: Could not connect to server' }])
+    }
   }
-}
-
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -39,12 +36,10 @@ function App() {
 
   return (
     <div className="chat-container">
-      <h1>✨ Rasa Chatbot ✨</h1>
+      <h1>✨ Hugging Face Chatbot ✨</h1>
       <div className="chat-window">
         {messages.map((m, i) => (
-          <div key={i} className={`msg ${m.from}`}>
-            {m.text}
-          </div>
+          <div key={i} className={`msg ${m.from}`}>{m.text}</div>
         ))}
         <div ref={chatEndRef} />
       </div>
@@ -62,4 +57,3 @@ function App() {
 }
 
 export default App
-

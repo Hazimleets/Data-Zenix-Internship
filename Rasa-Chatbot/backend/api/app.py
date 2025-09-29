@@ -20,7 +20,7 @@ class Message(BaseModel):
 
 @app.get("/")
 def root():
-    return {"message": "Welcome to the Hugging Face Chatbot API. Use the /send endpoint to interact with the bot."}
+    return {"message": "Welcome to the Local Chatbot API. Use /send to interact."}
 
 @app.get("/health")
 def health_check():
