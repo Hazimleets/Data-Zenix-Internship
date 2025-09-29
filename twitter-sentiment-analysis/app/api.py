@@ -17,6 +17,10 @@ app = FastAPI(title="Twitter Sentiment API", version="1.0")
 
 class TextIn(BaseModel):
     text: str
+    
+@app.get("/")
+def root():
+    return {"message": "Welcome to the Twitter Sentiment Analysis API. Use the /predict/ endpoint to analyze sentiment."}
 
 @app.post("/predict/")
 def predict_sentiment(item: TextIn):

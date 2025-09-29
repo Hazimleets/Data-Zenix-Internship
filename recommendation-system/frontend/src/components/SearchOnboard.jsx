@@ -1,4 +1,5 @@
-// frontend/src/components/SearchOnboard.jsx
+// recommendation-system/frontend/src/components/SearchOnboard.jsx
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -18,9 +19,8 @@ export default function SearchOnboard({ liked, setLiked }) {
     }
   }
 
-  // Fetch initial 20 books when page loads
   useEffect(() => {
-    fetchBooks("");
+    fetchBooks(""); // initial load
   }, []);
 
   function handleInputChange(e) {
@@ -59,7 +59,7 @@ export default function SearchOnboard({ liked, setLiked }) {
               }`}
               onClick={() => toggleLike(s.book_id)}
             >
-              {s["Book-Title"]} — {s["Book-Author"]}
+              {s.title} — {s.author}
             </li>
           ))}
         </ul>

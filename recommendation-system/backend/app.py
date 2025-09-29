@@ -1,132 +1,104 @@
+# recommendation-system/backend/app.py
+
 # backend/app.py
-import os
-from fastapi import FastAPI
-from pydantic import BaseModel
-from scipy.sparse import csr_matrix
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-import joblib
-import numpy as np
+from pydantic import BaseModel
+from typing import Optional
+import pandas as pd
+import pickle
+import os
 
-# --- Paths ---
-ROOT = os.path.dirname(__file__)
-MODEL_DIR = os.path.join(ROOT, "models")
+app = FastAPI()
 
-# --- FastAPI app ---
-app = FastAPI(title="Book Recommender API", version="1.0")
-
+# Allow frontend to call backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # allow all
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- Input schema ---
-class PreferenceIn(BaseModel):
-    user_id: str = None
+# Paths
+DATA_PATH = "./data/Books.csv"
+PICKLE_PATH = "./models/cf_matrix.pkl"
+
+# Load dataset
+try:
+    books_df = pd.read_csv(DATA_PATH, low_memory=False)
+    print(f"✅ Loaded {len(books_df)} books")
+
+    # Normalize columns: rename ISBN → book_id
+    if "ISBN" in books_df.columns:
+        books_df = books_df.rename(columns={"ISBN": "book_id"})
+except FileNotFoundError:
+    print(f"⚠️ Books dataset not found at {DATA_PATH}")
+    books_df = pd.DataFrame()
+
+# Load model
+cf_matrix = {}
+if os.path.exists(PICKLE_PATH):
+    try:
+        with open(PICKLE_PATH, "rb") as f:
+            cf_matrix = pickle.load(f)
+        print("✅ Model loaded")
+    except Exception as e:
+        print("⚠️ Error loading pickle:", e)
+else:
+    print("⚠️ Model not found, using dummy fallback.")
+
+
+class RecommendationRequest(BaseModel):
+    user_id: Optional[int] = None
     liked_book_ids: list[str] = []
-
-# --- Lazy load models ---
-_user_item_matrix = None
-_cf_matrix = None
-_content_matrix = None
-_tfidf = None
-_user_enc = None
-_item_enc = None
-_books_df = None
+    k: int = 10
 
 
-def load_models():
-    global _user_item_matrix, _cf_matrix, _content_matrix, _tfidf, _user_enc, _item_enc, _books_df
-    if _user_item_matrix is None:
-        print("📦 Loading models from backend/models...")
-
-        # Load saved artifacts
-        _user_item_matrix = joblib.load(os.path.join(MODEL_DIR, "user_item_matrix.pkl"))
-        _cf_matrix = joblib.load(os.path.join(MODEL_DIR, "cf_matrix.pkl"))
-        _content_matrix = joblib.load(os.path.join(MODEL_DIR, "content_matrix.pkl"))
-        _tfidf = joblib.load(os.path.join(MODEL_DIR, "tfidf_vectorizer.pkl"))
-        _user_enc = joblib.load(os.path.join(MODEL_DIR, "user_encoder.pkl"))
-        _item_enc = joblib.load(os.path.join(MODEL_DIR, "item_encoder.pkl"))
-
-        # Load books.csv for metadata
-        import pandas as pd
-        books_path = os.path.join(ROOT, "data", "Books.csv")
-        _books_df = pd.read_csv(books_path, on_bad_lines="skip")
-        _books_df.rename(columns={"ISBN": "book_id"}, inplace=True)
-
-        print("✅ Models loaded successfully!")
-
-    return _user_item_matrix, _cf_matrix, _content_matrix, _tfidf, _user_enc, _item_enc, _books_df
-
-
-# --- Health endpoint ---
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
-
-
-# --- Get books for search ---
 @app.get("/books")
-async def get_books(q: str = ""):
-    _, _, _, _, _, _, books_df = load_models()
+def list_books(q: str = Query("", min_length=0)):
+    """Simple search in Books.csv"""
+    if books_df.empty:
+        return []
 
-    if q:
-        filtered = books_df[
-            books_df["Book-Title"].str.contains(q, case=False, na=False)
-            | books_df["Book-Author"].str.contains(q, case=False, na=False)
-        ].head(20)
-    else:
-        filtered = books_df.head(20)
+    results = books_df[
+        books_df["Book-Title"].str.contains(q, case=False, na=False)
+        | books_df["Book-Author"].str.contains(q, case=False, na=False)
+    ].head(20)
 
-    return filtered[["book_id", "Book-Title", "Book-Author"]].to_dict(orient="records")
+    # Return consistent schema
+    return [
+        {
+            "book_id": row.get("book_id", "unknown"),
+            "title": row.get("Book-Title", "Unknown"),
+            "author": row.get("Book-Author", "Unknown"),
+        }
+        for _, row in results.iterrows()
+    ]
 
 
-# --- Recommend endpoint ---
 @app.post("/recommend")
-async def recommend(pref: PreferenceIn, k: int = 10):
-    user_item_matrix, cf_matrix, content_matrix, tfidf, user_enc, item_enc, books_df = load_models()
+def recommend(req: RecommendationRequest):
+    """Dummy recommender – returns random top-k books."""
+    print(f"📩 Request: {req.dict()}")
 
-    results = []
+    if books_df.empty:
+        return {"recommendations": [
+            {"book_id": "dummy1", "title": "The Pragmatic Programmer", "author": "Andrew Hunt"},
+            {"book_id": "dummy2", "title": "Clean Code", "author": "Robert C. Martin"},
+            {"book_id": "dummy3", "title": "Deep Learning", "author": "Ian Goodfellow"},
+        ]}
 
-    # Case 1: user_id known
-    if pref.user_id:
-        try:
-            user_idx = user_enc.transform([pref.user_id])[0]
-            user_ratings = user_item_matrix[user_idx].toarray().flatten()
-            scores = cf_matrix[user_idx].dot(cf_matrix.T)
-            top_indices = np.argsort(scores)[::-1][:k]
-            for idx in top_indices:
-                book_id = item_enc.inverse_transform([idx])[0]
-                row = books_df[books_df["book_id"] == book_id].iloc[0]
-                results.append({
-                    "book_id": book_id,
-                    "title": row["Book-Title"],
-                    "author": row["Book-Author"]
-                })
-        except Exception:
-            pass
+    # Just return top-k random books
+    sample_books = books_df.sample(min(req.k, len(books_df)))
+    recommendations = [
+        {
+            "book_id": row.get("book_id", row.get("ISBN", "unknown")),
+            "title": row.get("Book-Title", "Unknown"),
+            "author": row.get("Book-Author", "Unknown"),
+        }
+        for _, row in sample_books.iterrows()
+    ]
 
-    # Case 2: cold start with liked_book_ids
-    elif pref.liked_book_ids:
-        liked_idxs = []
-        for bid in pref.liked_book_ids:
-            try:
-                liked_idxs.append(item_enc.transform([bid])[0])
-            except Exception:
-                continue
+    return {"recommendations": recommendations}
 
-        if liked_idxs:
-            sim_scores = content_matrix[liked_idxs].mean(axis=0).A1
-            top_indices = np.argsort(sim_scores)[::-1][:k]
-            for idx in top_indices:
-                book_id = item_enc.inverse_transform([idx])[0]
-                row = books_df[books_df["book_id"] == book_id].iloc[0]
-                results.append({
-                    "book_id": book_id,
-                    "title": row["Book-Title"],
-                    "author": row["Book-Author"]
-                })
-
-    return {"recommendations": results}

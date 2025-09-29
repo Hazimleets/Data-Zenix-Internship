@@ -1,10 +1,10 @@
 # sales-forcasting/src/data_loader.py
 
-import pandas as pd
 import os
+import pandas as pd
 
 CSV_NAME = "vgsales.csv"
-DATA_PATH = os.path.join("data", CSV_NAME)
+DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", CSV_NAME)
 
 def load_raw(path: str = None) -> pd.DataFrame:
     """

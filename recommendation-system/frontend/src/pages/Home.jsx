@@ -14,7 +14,7 @@ export default function Home() {
     setLoading(true);
     try {
       const data = await getRecommendations({ liked_book_ids: liked, k: 12 });
-      setRecs(data.recommendations || []);
+      setRecs(data || []); // ✅ FIXED: data is already the list
     } catch (err) {
       console.error(err);
       alert("Error fetching recommendations");
@@ -61,10 +61,15 @@ export default function Home() {
               Your Recommendations
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {recs.map((r) => (
+              {recs.map((r, i) => (
                 <BookCard
-                  key={r.book_id}
-                  book={{ ...r, title: r.book_id }}
+                  key={i}
+                  book={{
+                    book_id: r.book_id || r.title,
+                    title: r.title || r.book_id,
+                    authors: r.author || "Unknown Author",
+                    score: r.score || null,
+                  }}
                   onSelect={() => {}}
                 />
               ))}
@@ -75,3 +80,4 @@ export default function Home() {
     </div>
   );
 }
+

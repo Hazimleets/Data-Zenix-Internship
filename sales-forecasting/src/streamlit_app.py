@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 # --- Load model ---
-MODEL_PATH = "models/rf_model.joblib"
+MODEL_PATH = "../models/rf_model.joblib"
 model = load_model(MODEL_PATH)
 
 # --- Load and preprocess data ---

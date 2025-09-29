@@ -1,38 +1,33 @@
-# backend/api/hf_api.py
 import os
 from dotenv import load_dotenv
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
-import torch
+from transformers import pipeline
 
 # Load env vars
 load_dotenv()
 
-MODEL_NAME = os.getenv("MODEL_NAME") or "google/flan-t5-large"
-HF_TOKEN = os.getenv("HF_TOKEN") or None
+MODEL_NAME = os.getenv("MODEL_NAME")
+HF_TOKEN = os.getenv("HF_TOKEN")
 
 print(f"🔧 Loading Hugging Face model: {MODEL_NAME}")
 
-# Device
-device = 0 if torch.cuda.is_available() else -1
-
-# Load model (use_auth_token only if token is set)
-tokenizer = AutoTokenizer.from_pretrained(
-    MODEL_NAME, use_auth_token=HF_TOKEN if HF_TOKEN else None
+pipe = pipeline(
+    "text-generation",
+    model=MODEL_NAME,
+    use_auth_token=HF_TOKEN,
+    device_map="auto"  # use GPU if available
 )
-model = AutoModelForSeq2SeqLM.from_pretrained(
-    MODEL_NAME, use_auth_token=HF_TOKEN if HF_TOKEN else None
-)
-
-# Create pipeline
-qa_pipeline = pipeline("text2text-generation", model=model, tokenizer=tokenizer, device=device)
 
 def get_answer(question: str) -> str:
-    result = qa_pipeline(
-        question,
-        max_length=1024,  # increase output length
-        min_length=200,   # optional, force some minimum
-        do_sample=True,   # enable sampling for more natural outputs
-        temperature=0.7,
-        top_p=0.9
-    )
-    return result[0]["generated_text"]
+    """
+    Returns the answer from the Hugging Face model.
+    """
+    try:
+        outputs = pipe(
+            question,
+            max_new_tokens=256,
+            temperature=0.7,
+            top_p=0.9
+        )
+        return outputs[0]["generated_text"]
+    except Exception as e:
+        return f"❌ Inference failed: {str(e)}"
